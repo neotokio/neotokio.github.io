@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>IndieHackers Statistics, Dataset Exploration Case Study | neoTokio data science blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="IndieHackers Statistics, Dataset Exploration Case Study" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Motivation for writing this article was mostly educational. It started as a quest to learn web scraping of JavaScript based websites and basic data exploration using python." />
+<meta property="og:description" content="Motivation for writing this article was mostly educational. It started as a quest to learn web scraping of JavaScript based websites and basic data exploration using python." />
+<link rel="canonical" href="http://localhost:4000/2019/04/18/Indiehackers-statistics-dataset-exploration-case-study.html" />
+<meta property="og:url" content="http://localhost:4000/2019/04/18/Indiehackers-statistics-dataset-exploration-case-study.html" />
+<meta property="og:site_name" content="neoTokio data science blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-18T14:51:12+02:00" />
+<script type="application/ld+json">
+{"description":"Motivation for writing this article was mostly educational. It started as a quest to learn web scraping of JavaScript based websites and basic data exploration using python.","@type":"BlogPosting","url":"http://localhost:4000/2019/04/18/Indiehackers-statistics-dataset-exploration-case-study.html","headline":"IndieHackers Statistics, Dataset Exploration Case Study","dateModified":"2019-04-18T14:51:12+02:00","datePublished":"2019-04-18T14:51:12+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/04/18/Indiehackers-statistics-dataset-exploration-case-study.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="neoTokio data science blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">neoTokio data science blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">IndieHackers Statistics, Dataset Exploration Case Study</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-04-18T14:51:12+02:00" itemprop="datePublished">Apr 18, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Motivation for writing this article was mostly educational. It started as a quest to learn web scraping of JavaScript based websites and basic data exploration using python.</p>
+
+<p>IndieHackers was a perfect fit for the purpose of drawing general view on small, mostly solo, enterprises. Of course, there is more than only IndieHackers when it comes to micro startup scene. I will hopefully cover the rest of existing services in future. I found only one article dealing with IH economy and it was limited to survey conducted through community. Surveys are great way to find out hard to quantify vectors, but in case of IH a lot of data is public. I started with creating web crawler and, obviously, throttling its speed to avoid issues with IH staff.</p>
+
+<p><strong>TL;DR</strong></p>
+
+<p>Can micro startup be profitable? Some can. Can I make money as solo founder? Yes, if you beat the market. What are the odds of success? ~30%. What niche should I choose? There is more niches than mainstream products! How much of competition should I expect? A lot, but you can limit your exposure to competition. Will my project have edge over already existing ones? You can find edge easily and I even show you how.</p>
+
+<p>In short, we will see:</p>
+
+<ul>
+  <li>
+    <p>Overall IH economy condition</p>
+  </li>
+  <li>
+    <p>Products distribution on IH</p>
+  </li>
+  <li>
+    <p>Revenue distribution on IH</p>
+  </li>
+  <li>
+    <p>Creators profile</p>
+  </li>
+</ul>
+
+<p>To keep things interesting we will try to make some competitive/price analysis using available dataset assuming role of potential creator who looks for a new product niche.</p>
+
+<h2 id="choosing-interesting-data-vectors">Choosing interesting data vectors</h2>
+
+<p>My <strong>dataset contains 22 columns with 1786 rows which currently represent most of products available on IH</strong> (I dropped collecting remaining 30 products because of problems with my VPS provider, those were 0$ projects). Each row represents one product and each column specifies different vector of a product, starting from the most obvious ones like ‘ProductName’ through ‘TagLine’ or ‘NumberOfFollowers’, up to the most interesting one — ‘Revenue’. For the sake of completion I also followed with links to ‘Creators Page’ to learn more about IH creators.</p>
+
+<p>Let’s check what collected dataset tells us about it.
+Basics</p>
+
+<p>Total monthly revenue from 1786 products is: <strong>22357823$</strong></p>
+
+<p>Mean revenue from 1786 products is: <strong>12518.37$</strong></p>
+
+<p>Median revenue from 1786 products is: <strong>25.5$</strong></p>
+
+<p>Maximum revenue: <strong>2.5M $</strong> Minimum revenue: <strong>0$</strong></p>
+
+<p>Since it’s easy to check, maximum and minimum revenue should not be a surprise. Mean revenue was also within expected values; there obviously is a lot of successful projects on IH. But what about median? Why is it so low? This is first warning sign for aspiring entrepreneur. We usually focus on a ‘big thing’, next we use ‘average’ as validation of our views and we end up discarding failures as something that happens only to others. In case of solo ventures, well, you have a big chance to land a spot among ‘others’.</p>
+
+<p><strong>Number of products within revenue bands:</strong></p>
+
+<p><img src="/assets/post_img/revenue_band.png" alt="Revenue Bands" class="img-responsive" /></p>
+
+<blockquote>
+  <p>There is 804 products with 0$ revenue. Contrary to 4 products with above 1mln revenue.</p>
+</blockquote>
+
+<p>Yes. <strong>45.6% of projects do not earn even 1$.</strong> Of course, some of projects defined as ‘0$ revenue’ were never designed to earn money (ie. ‘meetup’), but its overstatement to say that 45% of creators didn’t intend to earn money for their work. <strong>A lot of projects in this revenue band are ‘spin offs’ of already existing ones, lacked sell power or were simply abandoned too early.</strong> If you are looking for an idea there are probably some diamonds hiding here, but be ready to dig through a lot of rhinestones (btw. there is such project already on IndieHackers, <a href="https://www.indiehackers.com/product/1kprojects">https://www.indiehackers.com/product/1kprojects</a>)</p>
+
+<p>On a more positive note; we can also see considerable degree of success within IH products. It’s good that IH shares 0$ revenue projects, this doesn’t sweeten statistics, any solo founder should realize that work can, and most likely will, be rough. However, let it be said that when you make it, you usually make it big! Yes, to this point article seems to be pessimistic, but actually it’s quite opposite, we will move to some good news soon enough.</p>
+
+<p><strong>We need to have a general overview of tag occurrence. Excluding non-category items for clarity.</strong></p>
+
+<p><img src="/assets/post_img/tag_occurence.png" alt="Tag occurence" class="img-responsive" /></p>
+
+<blockquote>
+  <p>There is visible pattern when it comes to categories of products chosen by solo founders. We will expand this topic a little in a moment.</p>
+</blockquote>
+
+<p><strong>Now, let’s check description-type items (excluded from plot above) to learn more about who and what exactly stands behind products.</strong></p>
+
+<p><img src="/assets/post_img/description_items.png" alt="Description items" class="img-responsive" /></p>
+
+<p>If we were to make conclusions solely based on occurrence of tags it’s clear that an <strong>average IndieHacker is a solo funder, with coding skills, most likely offering SaaS product related to her/his already ongoing work (Productivity being top used tag).</strong> That being said, there is more than +300 micro projects which have non-programming founders. It’s not necessary to be a software developer, but it helps big. In reality, a lot of what goes for ‘programming’ in micro startup scene is ability to learn fast and glue things together. Knowing what to learn and what to glue is essential. If you don’t program — start. Even if you will not finish every single course, it doesn’t matter, creative thinkers (founders are by nature creative thinkers!) need something to anchor their dreams to, without it you will either spend a lot of money on outsourcing or just fail to materialize your ideas. In next article we will try to learn more about community itself and their actual skill set using non-quantifiable data, so consider following me if you are interested &gt; click.</p>
+
+<h2 id="digging-deep-into-specifics">Digging Deep into Specifics</h2>
+
+<p>We already know total median &amp; mean income, but how does it look like within each revenue band?</p>
+
+<p><img src="/assets/post_img/mean_median.png" alt="Mean/Median Revenue Bands" class="img-responsive" /></p>
+
+<blockquote>
+  <p>That’s definitely not a standard distribution.</p>
+</blockquote>
+
+<p><strong>It’s totally opposite to occurrence of products within same revenue bands.</strong> Obviously, 0$ revenue project median is 0, but another three bands do not even make a dent comparing to the last one or even two before that. <strong>Most of income generated on IH comes from 30.4% products (Pareto distribution).</strong> Another thing worth noting is that the median revenue does not look so grim if we exclude 804 projects without any revenue. That’s something you will be aiming for. Jumping through first three revenue bands is essential if micro service is suppose to be your main income source. Note that IndieHackers gives only monthly revenue, not yearly, it doesn’t (in collected dataset) specify expenses nor it doesn’t give low/high income during a year. This statistics (nor anything for that matter) will not recreate the actual year-to-year earnings. Only 567 products are able (assuming you live in one of most popular destinations for founders) to fully support their creators.</p>
+
+<p><strong>We already seen occurrence of a category, below we can see monthly revenue per each category in total.</strong> (1.0 = 10 millions)</p>
+
+<p><img src="/assets/post_img/revenue_per_tag.png" alt="Revenue Per Tag" class="img-responsive" /></p>
+
+<blockquote>
+  <p>Revenue is not strongly correlated with popularity of category.</p>
+</blockquote>
+
+<p>Surprise! It’s different than number of occurrences of each category, which means that <strong>choosing non-mainstream market is more profitable.</strong> If you are planning to start a new product it might be useful to notice that categories like ‘Communication’, ‘APIs’ or ‘Advertising’ are less utilized, but on average bring higher monthly revenue. For example, <strong>‘Payments’ moved itself 26 positions up, which means that there is lesser amount of ‘Payments’ products but on average they bring more income.</strong> You can use two of those plots (occurrence vs revenue) to find perfect equilibrium between supply, demand and competitiveness of the market you are trying to enter.</p>
+
+<p>It becomes clear that focus of micro startup developers is within personal niche. It means that most of founders make IH products as side projects. Look at it this way, <strong>if I already spend a lot of time thinking about my productivity, why not make a product out of it?</strong> Of course, this is not true all across the scale. But compare ‘Productivity’ tag to tags like ‘Legal’, ‘Art’ or ‘Games’, those are very specific industries, while ‘Productivity’ is more than often a side project. This also shows actual demand, if we assume that supply/demand always goes in pair, for products. However, as we will check in a second, this is often a rocky road for a fresh founder. IndieHackers is also marketplace in itself so founders are also buyers of other products presented on a website, we can conclude that a lot of products are created with IH community in mind.</p>
+
+<p>Okay, so let’s do exactly that. Let’s explore interesting markets in more detail. This step can be repeated for each of categories, but for now we will focus on four already mentioned above. Our data already tells us that they bring higher revenue and are less competitive than ‘Productivity’ or ‘Utilities’. Of course, <strong>we need to remember that IH does not have any limit on tags used, there is no reason to assume that product within ‘Productivity’ category will not also be in ‘APIs’.</strong></p>
+
+<p><img src="/assets/post_img/mean_median_cate.png" alt="Strategy" class="img-responsive" /></p>
+
+<blockquote>
+  <p>This strategy may help choosing your next target market.</p>
+</blockquote>
+
+<p>That’s it. ‘Productivity’ category has still biggest share of mean income, but notice how many projects with 0$ revenue reside within this category, <strong>we can conclude that ‘Productivity’ is definitely full of competition.</strong> We notice that mean income in ‘Communication’ does not differ too much from ‘Productivity’. What’s interesting is that <strong>‘Communication’ has only 25.9% discount in mean revenue, while being 47.7% less popular.</strong> ‘APIs’ and ‘Advertising’ seem to be very similar markets but they also share a feature with ‘Communication’ — <strong>small discount in mean revenue, big popularity gap.</strong> ‘Payments’ is most interesting, if we plan to ‘make it big’, <strong>44.9% of discount to ‘Productivity’, but this goes hand-in-hand with 87.6% difference in popularity and really small amount of 0 revenue projects.</strong> In this example, all of 4 categories are interesting targets for product development, each one provides income opportunity while minimizing systemic risks (ie. competition, overall market size, market capacity, probability of project failure).</p>
+
+<h2 id="bonus-alternative-data-from-ih-dataset">Bonus! Alternative Data from IH Dataset</h2>
+
+<p>Wordcloud based on occurrence of word (excluding stopwords) in IH taglines</p>
+
+<p><img src="/assets/post_img/wordcloud.png" alt="Wordcloud" class="img-responsive" /></p>
+
+<blockquote>
+  <p>Most popular word is… “app” (we needed to convert taglines to lowercase characters because combination of app+App was very popular), it has 98 occurrences. IndieHackers very often contain category name in which they are selling their products, we can see keywords like ‘Management’, ‘Wordpress’, ‘API’, ‘Community’ or even ‘Instagram’ high in total word count.</p>
+</blockquote>
+
+<h2 id="creator-profile">Creator Profile</h2>
+
+<p>IndieHackers are very fond of Twitter, out of 1786 product creators collected we found out that <strong>1224 did specify their personal twitter account.</strong> Its <strong>204 more twitter accounts than email addresses</strong> (1021 people specified personal email address).</p>
+
+<p>Community is however less eager to share their age. Only 633 people specified their age. Median age is … 30. A perfect age to start a business!</p>
+
+<p><strong>1226 creators shared their location.</strong> Community on IH is very diverse, we have people from all around the world, US, Morocco, Israel, Ukraine, United Kingdom or Australia. It was hard sorting through geolocation on IH, mostly because IH allows non-standarized input (people can specify only country or city, use non-unicode characters etc.), but here is overall distribution of location on IH assuming more than 10 occurrences.</p>
+
+<p><img src="/assets/post_img/geo.png" alt="Where are IndieHackers from?" class="img-responsive" /></p>
+
+<blockquote>
+  <p>There was no surprise in location of IndieHackers, US being most popular, but (what could not be reliably represented in any plot because we had 543 different locations of creators in just 1786 products) there is tremendous diversity among IH community. IH-craze is definitely world-wide.</p>
+</blockquote>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>It was fun to work with IH dataset. The biggest experience came from thinking about data, technical aspects of work could always be solved by just browsing Internet, but there is not much one can do to better her/his analytical thinking than just simply dive into a dataset. It’s comparable with what we can often read on IndieHackers, <strong>don’t over think tools, focus on delivery, because there is far more non-technical obstacles than technical ones.</strong></p>
+
+<p>As for IH economy. We have a a lot of very successful projects, we have a lot of non-successful projects. This also reflects advices we often hear from established creators on IH. <strong>According to dataset, you have about 70% chance of failure with your product on IH, however, if you will push above this 70%, your median income should be above 5000$/month.</strong> There is also a lot of untapped market in which potential creator will face far less competition and bigger monthly revenue on average, so saying that ‘Everything already was’ is untrue in this case. <strong>On average we can find 30% monthly revenue income edge if we choose less popular category for our product.</strong></p>
+
+<p>Full code can be found here:</p>
+
+  </div><a class="u-url" href="/2019/04/18/Indiehackers-statistics-dataset-exploration-case-study.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading" style="text-align:center; font-size:14px;">
+		<a href="https://twitter.com/neotokio_3">Tweet Me!</a>
+		<a href="https://github.com/neotokio">Github Me!</a>
+		</h2>
+	    <h2 class="footer-heading" style="text-align:center; font-size:11px;">
+		I solemnly swear that I am up to fill it someday</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">
+            </li>
+            <li><a class="u-email" href="mailto:"></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

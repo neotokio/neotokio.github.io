@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Beginners programmer guide to solving easy problems. | neoTokio data science blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Beginners programmer guide to solving easy problems." />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Writing code can be hard. Writing good code is even harder. Being stuck on a seemingly easy task while writing code is the hardest. For this you can find tremendous amount of resources available to help you get unstack, all under your fingertips. However, even in the information age society, where there are thousands of experienced programmers willing to help you in their spare time and abundance of online communities (both free and paid) which exists solely for a purpose of solving ‘this-one-thing-you-cannot-wrap-your-head-around’ it will be still up to you to know what the heck are you trying to do." />
+<meta property="og:description" content="Writing code can be hard. Writing good code is even harder. Being stuck on a seemingly easy task while writing code is the hardest. For this you can find tremendous amount of resources available to help you get unstack, all under your fingertips. However, even in the information age society, where there are thousands of experienced programmers willing to help you in their spare time and abundance of online communities (both free and paid) which exists solely for a purpose of solving ‘this-one-thing-you-cannot-wrap-your-head-around’ it will be still up to you to know what the heck are you trying to do." />
+<link rel="canonical" href="http://localhost:4000/2019/07/15/Beginners-programmer-guide-to-solving-easy-problems.html" />
+<meta property="og:url" content="http://localhost:4000/2019/07/15/Beginners-programmer-guide-to-solving-easy-problems.html" />
+<meta property="og:site_name" content="neoTokio data science blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-15T10:21:22+02:00" />
+<script type="application/ld+json">
+{"description":"Writing code can be hard. Writing good code is even harder. Being stuck on a seemingly easy task while writing code is the hardest. For this you can find tremendous amount of resources available to help you get unstack, all under your fingertips. However, even in the information age society, where there are thousands of experienced programmers willing to help you in their spare time and abundance of online communities (both free and paid) which exists solely for a purpose of solving ‘this-one-thing-you-cannot-wrap-your-head-around’ it will be still up to you to know what the heck are you trying to do.","@type":"BlogPosting","url":"http://localhost:4000/2019/07/15/Beginners-programmer-guide-to-solving-easy-problems.html","headline":"Beginners programmer guide to solving easy problems.","dateModified":"2019-07-15T10:21:22+02:00","datePublished":"2019-07-15T10:21:22+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/07/15/Beginners-programmer-guide-to-solving-easy-problems.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="neoTokio data science blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">neoTokio data science blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Beginners programmer guide to solving easy problems.</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-07-15T10:21:22+02:00" itemprop="datePublished">Jul 15, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Writing code can be hard. Writing good code is even harder. <strong>Being stuck on a seemingly easy task while writing code is the hardest.</strong> For this you can find tremendous amount of resources available  to help you get unstack, all under your fingertips. However, even in the information age society, where there are thousands of experienced programmers willing to help you in their spare time and abundance of online communities (both free and paid) which exists solely for a purpose of <strong>solving ‘this-one-thing-you-cannot-wrap-your-head-around’ it will be still up to you to know what the heck are you trying to do.</strong></p>
+
+<p>To illustrate how entangled you can get in your own thought process, I will use recent example of very easy task I was faced with, <strong>transforming JSON API response in form of a nested dictionary into multindexed pandas dataframe.</strong> And yeah, I got stuck with it, but it literally took one line of code to solve. Moreover, all was given in very precise single stackoverflow answer.</p>
+
+<p><strong>So why did it took 2 days to solve?</strong></p>
+
+<p>There are a few reasons, first being … lack of experience. I will not focus on this. That’s obvious if you are beginner programmer (&lt;1yr of programming experience). You can read it in almost every tutorial, for every language or library that exists. It can only be remedied by gaining experience, which you do by writing more code, making more mistakes and learning how to correct them. Obviously.</p>
+
+<p>Having more experience, besides typing functions faster, gives you <strong>ability to clearly define what the heck are you trying to accomplish.</strong> You can easily single out novice programmer questions not only by how entry-level question those are, but also by how well formed (and formated) they are.</p>
+
+<p>Stackoverflow is flooded with duplicate questions, question which try to accomplish something VERY atypical, questions which try to ‘reinvent the wheel’ or simply questions which cannot be understood <strong>until somebody will rephrase it 6 times … only to realize he actually wanted to do something different.</strong></p>
+
+<p><strong>Why I failed to realize what I really wanted to do?</strong></p>
+
+<p>Let’s define task again:</p>
+
+<p>We have <strong>a JSON API response</strong> which returns <strong>nested dictionary.</strong> We want to <strong>load</strong> one of the dictionaries into <strong>multi-index</strong> pandas <strong>dataframe.</strong></p>
+
+<p><em>Example of a dictionary with nested sub-dictionary (‘points’ key).</em></p>
+
+<p><img src="/assets/post_img/key-value.png" alt="Key value pairs example" class="img-responsive" /></p>
+
+<p><em>Example of job finished, dictionary translated to dataframe.</em></p>
+
+<p><img src="/assets/post_img/key-value-finished.png" alt="Key value pairs example" class="img-responsive" /></p>
+
+<p>If we break it into smaller chunks, we get the following:</p>
+
+<ol>
+  <li>JSON API response</li>
+  <li>Return .json file</li>
+  <li>JSON file contains multiple keys and values, few in form of nested dictionaries</li>
+  <li>Dataframe is a pandas object</li>
+  <li>Multi-index dataframe is special pandas object</li>
+</ol>
+
+<p>As you can see this is a multi-stepped process. Most of tutorials, courses or documentation operates (not without a reason) on generalized examples, all of responses returned are always in readily readable format, dictionaries are in simplest and well formated form which doesn’t need to be adjusted for things like array length or types to fit well into dataframes. In principle, if you read about programming it seems to have tremendous flow, where each puzzle fits perfectly into its place. But, in practice, you first try to find a picture you need to compose <strong>(what the heck I am trying to do?),</strong> then realize that puzzles are scattered all around the house <strong>(how the heck will I do that?)</strong> and only then start to place separate puzzles into full picture <strong>(the heck! I am doing it!).</strong></p>
+
+<p>Not knowing the right question to ask will stop you from creating anything beyond some easily repeatable code from online course. It is similar to the problem of not having a puzzle picture to follow through. <strong>You don’t need to ask question on stackoverflow, first ask it to yourself,</strong> there is a very high probability that you will solve it within minutes without outside help and if not, you may realize that you actually don’t exactly know what you want to build. The biggest help you can get at this stage lies outside of computer screen, <strong>use pen and paper to describe or even draw what exactly do you want to do, label everything, write your thoughts about the problem at margins.</strong> This solves easily 80% of cases at spot.</p>
+
+<p><strong>Back to our problem.</strong></p>
+
+<p>I had two possible approaches here (there is probably even more)</p>
+
+<p>I can choose to load .json file directly into pandas dataframe in full, then select interesting sub-dictionary (column in df), store it as separate variable, <strong>transform it to new dataframe</strong> while unstacking nested key-value pairs within and assigning appropriate index.</p>
+
+<p>I can choose to load .json file with json library first, then select interesting key, create empty dictionary to store key-value pairs from for loop over needed values, <strong>transform it to dataframe.</strong></p>
+
+<p>Both accomplish exactly the same but share only last step, namely- ‘<strong>transform it to new dataframe’ .</strong> That should be a cue from the beginning as that is actually what I want to do, I don’t want to know how to ‘read nested dictionaries’, ‘iterate over key-value pairs’, ‘create nested dictionary’ or ‘load dictionary into dataframe’ . But, boy, I tried to do all of that first, getting more and more frustrated why exactly my data seems not to fit well or simply fails to be loaded into dataframe. Trying to hunt down every single scattered piece of puzzle only to randomly fit them together, hoping that some will ‘click’. Of course, that’s natural learning process, but it’s expensive. It is also obvious decision, if you follow the process without clearly defined goal, to check on the last step… last.</p>
+
+<p>It took 94 questions to get to working solution, below you can see most common words in titles of those questions. All of this could be easily avoided by stopping for a minute and thinking – what exactly do I want to do?</p>
+
+<p><img src="/assets/post_img/wordfreq_stackoverflow.png" alt="Most common words in questions" class="img-responsive" /></p>
+
+<p><strong>There are multiple ways to accomplish a goal, but you need to have a goal.</strong></p>
+
+<p>Actually, stackoverflow has pretty neat guide to asking questions.</p>
+
+<p><a href="https://stackoverflow.com/help/how-to-ask">https://stackoverflow.com/help/how-to-ask</a></p>
+
+<p>Not without a reason they also have text editor which supports writing questions in specific way and early ‘solution recommendation’ system in place. Truth is that your problem is a) most likely solved somewhere b) only a problem because you can’t define it well. Look at one of paragraphs</p>
+
+<p>If you’re having trouble summarizing the problem, <strong>write the title last</strong>- sometimes writing the rest of the question first can make it easier to describe the problem.</p>
+
+<p>This applies very well to the whole problem and it’s very similar to proposed trick with handwriting  description of your goal. It is very possible that you don’t have a much of a problem, but just struggle to define what exactly you want to accomplish.</p>
+
+<p><strong>The Solution</strong></p>
+
+<p>It was as clear as sky when on a third morning I sat down to a PC and just typed in well formed question, well, actually it wasn’t well formed, it was just precise. It didn’t focus on parts of a problem, it didn’t try to reinvent the wheel by querying documentation nor I didn’t try to adjust my somehow not-so-much-working code. And solution came within 5 minutes. Second click to stackoverflow provided me with a one-line solution I failed to figure out on my own for 2 days.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">new_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">points_list</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span> <span class="n">keys</span><span class="o">=</span><span class="n">points_list</span><span class="p">)</span></code></pre></figure>
+
+<p>I already knew concat element of pandas library, same as DataFrame, I knew list comprehension too, I knew elements of dictionary like .items(). All in all, I even knew how to write it myself, my biggest problem was that I just didn’t know what the heck I am actually trying to write! Do I want to somehow iterate through dictionaries? Do I want to create new dictionary from the one I have? Do I want to get some single values from dictionaries? No. I just wanted new_df.</p>
+
+
+  </div><a class="u-url" href="/2019/07/15/Beginners-programmer-guide-to-solving-easy-problems.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading" style="text-align:center; font-size:14px;">
+		<a href="https://twitter.com/neotokio_3">Tweet Me!</a>
+		<a href="https://github.com/neotokio">Github Me!</a>
+		</h2>
+	    <h2 class="footer-heading" style="text-align:center; font-size:11px;">
+		I solemnly swear that I am up to fill it someday</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">
+            </li>
+            <li><a class="u-email" href="mailto:"></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

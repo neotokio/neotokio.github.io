@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Web scraping 50 thousand documents from different sources for NLP | neoTokio data science blog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Web scraping 50 thousand documents from different sources for NLP" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In following article we will explore methods of building your own dataset for NLP. Doing so from ground up means solving a lot of problems. Publicly available datasets (ie. Kaggle) are usually preprocessed, where NaN values are properly tagged and out-of-category rows are removed. That is not the case when you start with empty spreadsheet which you will want to populate with data straight from the source. By source I don’t mean API which responds with nicely formated JSON key value pairs. We will learn how to get data directly from the websites, store it and clean it properly while avoiding unneeded losses. In part II we will continue with NLP methods of exploration. Building dataset yourself shows importance (and hardships) of data cleaning. You will discover how much better understanding of your data you will have after knowing what to remove from it and how to judge what to remove." />
+<meta property="og:description" content="In following article we will explore methods of building your own dataset for NLP. Doing so from ground up means solving a lot of problems. Publicly available datasets (ie. Kaggle) are usually preprocessed, where NaN values are properly tagged and out-of-category rows are removed. That is not the case when you start with empty spreadsheet which you will want to populate with data straight from the source. By source I don’t mean API which responds with nicely formated JSON key value pairs. We will learn how to get data directly from the websites, store it and clean it properly while avoiding unneeded losses. In part II we will continue with NLP methods of exploration. Building dataset yourself shows importance (and hardships) of data cleaning. You will discover how much better understanding of your data you will have after knowing what to remove from it and how to judge what to remove." />
+<link rel="canonical" href="http://localhost:4000/2019/09/10/Web-scraping-50-thousand-documents-for-NLP.html" />
+<meta property="og:url" content="http://localhost:4000/2019/09/10/Web-scraping-50-thousand-documents-for-NLP.html" />
+<meta property="og:site_name" content="neoTokio data science blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-09-10T04:51:12+02:00" />
+<script type="application/ld+json">
+{"description":"In following article we will explore methods of building your own dataset for NLP. Doing so from ground up means solving a lot of problems. Publicly available datasets (ie. Kaggle) are usually preprocessed, where NaN values are properly tagged and out-of-category rows are removed. That is not the case when you start with empty spreadsheet which you will want to populate with data straight from the source. By source I don’t mean API which responds with nicely formated JSON key value pairs. We will learn how to get data directly from the websites, store it and clean it properly while avoiding unneeded losses. In part II we will continue with NLP methods of exploration. Building dataset yourself shows importance (and hardships) of data cleaning. You will discover how much better understanding of your data you will have after knowing what to remove from it and how to judge what to remove.","@type":"BlogPosting","url":"http://localhost:4000/2019/09/10/Web-scraping-50-thousand-documents-for-NLP.html","headline":"Web scraping 50 thousand documents from different sources for NLP","dateModified":"2019-09-10T04:51:12+02:00","datePublished":"2019-09-10T04:51:12+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/09/10/Web-scraping-50-thousand-documents-for-NLP.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="neoTokio data science blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">neoTokio data science blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Web scraping 50 thousand documents from different sources for NLP</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-09-10T04:51:12+02:00" itemprop="datePublished">Sep 10, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In following article we will explore methods of <strong>building your own dataset for NLP</strong>. Doing so from ground up means solving a lot of problems. Publicly available datasets (ie. Kaggle) are usually preprocessed, where NaN values are properly tagged and out-of-category rows are removed. That is not the case when you start with empty spreadsheet which you will want to populate with data straight from the source. By source I don’t mean API which responds with nicely formated JSON key value pairs. <strong>We will learn how to get data directly from the websites, store it and clean it properly while avoiding unneeded losses.</strong> In part II we will continue with NLP methods of exploration. Building dataset yourself shows importance (and hardships) of data cleaning. You will discover how much better understanding of your data you will have after knowing what to remove from it and how to judge what to remove.</p>
+
+<p><strong>Why read it?(TL;DR)</strong></p>
+
+<p><em>It’s a long article, is there anything you didn’t see before? Well, I hope so. This article is more about logic and design of large data project which we will build step-by-step than a showcase of tools and methods used. We will dive into code of course (that is a big part of this text!) but reality is that code is written fast when you already know what to write. Here we will ponder on ‘what to write’ not, ‘how to write it’.</em></p>
+
+<p>Table of Contents:</p>
+
+<ul id="markdown-toc">
+  <li><a href="#introduction-what-topic-to-choose-for-data-science-project" id="markdown-toc-introduction-what-topic-to-choose-for-data-science-project">Introduction: What topic to choose for data science project?</a></li>
+  <li><a href="#finding-source-of-data-for-free" id="markdown-toc-finding-source-of-data-for-free">Finding source of data (for free).</a></li>
+  <li><a href="#web-scraping-using-waybackmachine-webarchiveorg" id="markdown-toc-web-scraping-using-waybackmachine-webarchiveorg">Web scraping using WaybackMachine (web.archive.org)</a></li>
+  <li><a href="#web-scraping-full-html-pages-based-on-condition" id="markdown-toc-web-scraping-full-html-pages-based-on-condition">Web scraping full html pages based on condition.</a></li>
+  <li><a href="#extracting-privacy-policy-text-from-50000-urls" id="markdown-toc-extracting-privacy-policy-text-from-50000-urls">Extracting privacy policy text from 50.000 urls.</a></li>
+  <li><a href="#storing-scrapy-items-in-postgresql" id="markdown-toc-storing-scrapy-items-in-postgresql">Storing scrapy items in PostgreSQL</a></li>
+  <li><a href="#how-to-clean-textual-data-using-python" id="markdown-toc-how-to-clean-textual-data-using-python">How to clean textual data using python?</a></li>
+  <li><a href="#summary" id="markdown-toc-summary">Summary</a></li>
+</ul>
+
+<p><strong>Tools used: Scrapy, PostgreSQL, Pandas, Matplotlib, NLTK, Regex, SQLalchemy, numpy</strong></p>
+
+<h2 id="introduction-what-topic-to-choose-for-data-science-project">Introduction: What topic to choose for data science project?</h2>
+
+<p>As mentioned, we will not work with any public API, nor we will work with something which was already described numerous times – I am looking at you, real estate data. It’s not that this is not interesting, you can find a lot of fresh case studies build around popular topics like housing markets or macroeconomic indicators. But here, let’s use something else.</p>
+
+<p>We will build a large corpus of legal documents which are available on almost every website. Namely, privacy policies &amp; terms of service. If you are interested in how to gather large amount of specific data from many different websites by web scraping – this is exactly what we will do. To accomplish this, I needed to hack around with few methods as you cannot crawl Google.com effectively without either large resources. You also want to avoid falling into grey area of web scraping or waisting a lot of time for manual discovery of data sources. We want to save time, build original dataset, clean it and learn something new. Let’s start.</p>
+
+<h2 id="finding-source-of-data-for-free">Finding source of data (for free).</h2>
+
+<p>One rule will guide us through process of finding our source – <strong>Whatever was posted on a web, stays on a web.</strong></p>
+
+<p>There are two services which are actually dealing privacy policies and their further analysis. I recommend checking out both, a lot of work went into those projects and they deserve community appriciation.</p>
+
+<p><a href="https://pribot.org/polisis">https://pribot.org/polisis</a> – <strong>Summarization of privacy polices using ML.</strong></p>
+
+<p><a href="https://tosdr.org/">https://tosdr.org/</a> - <strong>Rating of privacy policies using manual review.</strong></p>
+
+<p><strong>TOSDR</strong> processed more than 500 pages in manual manner, describing in detail crucial parts of those texts.</p>
+
+<p><strong>PRIBOT</strong> uses different approach, “At the core of Polisis is a privacy-centric language model, built with 130K  privacy policies, and a novel hierarchy of neural-network classifiers that accounts for both high-level aspects and fine-grained details of privacy practices.”</p>
+
+<p><em>(Read more here: <a href="https://pribot.org/files/Polisis_USENIX_Security_Paper.pdf">https://pribot.org/files/Polisis_USENIX_Security_Paper.pdf</a>)</em></p>
+
+<p>End product of this article is around 50.000 documents stored in database. How can we get it?</p>
+
+<p><strong>Idea 1.</strong> Find multiple sources manually.</p>
+
+<p><strong>Idea 2.</strong> Scrape Google for keywords and then websites.</p>
+
+<p><strong>Idea 3.</strong> Find a resource which allows you to get 50.000 thematic websites.</p>
+
+<p>We can grade those ideas by time/effort/resources ratio needed to make them work. Idea 1 is most accurate, it will find you websites you actually want to look at, great if you are building a product around specific dataset. Yet, it will be slow and highly curated process. Idea 2 is a grey area of web scraping, companies do it, employing a lot of resources to build distributed crawlers and hide their activity from Google which  heavily dislikes such practices. It was (is?) very popular in SEO community. Idea 3 is what we plan to do. The bottleneck is lack of free resource with quality websites to scrape from.</p>
+
+<p>There is also additional constrain, we want to have policies from websites that ‘matter’. So anything which stores user information, has considerable volume of traffic, provides some sort of a service to Internet buyers or has high position in rankings. That way we can be sure that contents of policies do matter for large amount of users. Also, we will focus on English-only websites.</p>
+
+<p>Alexa was providing “top websites globally” service for free few years back, but not anymore. It’s a shame because their list allowed for searching by country or categories, exactly what we needed.. I am not interested in specific websites statistics, I am only interested in URL to website however Alexa pushes me to pay for the whole service. What can be done about it?</p>
+
+<p>Well, we can check previous, free, version of Alexa using <a href="https://web.archive.org/">https://web.archive.org/</a>.</p>
+
+<p><strong>Bingo, version from 3 years ago is still free and archive.org created snapshots!</strong></p>
+
+<p><img src="/assets/post_img/archive.png" alt="Web archive snapshot from 3 years ago" class="img-responsive" /></p>
+
+<p>Yes, this will not be perfectly accurate, but a lot of websites existing in second half of 2016 still exists today and their importance didn’t change much. Alexa ranking do not necessarily reflect importance of given website for global Internet traffic but it will be good approximation when it comes to finding ‘websites that matter’.</p>
+
+<h2 id="web-scraping-using-waybackmachine-webarchiveorg">Web scraping using WaybackMachine (web.archive.org)</h2>
+
+<p>After entering todays Alexa URL, we get following link to scrape from:</p>
+
+<p><a href="https://web.archive.org/web/20161118212145/http://www.alexa.com/topsites/category">https://web.archive.org/web/20161118212145/http://www.alexa.com/topsites/category</a></p>
+
+<p>We need to crawl every category (and sub-category or even sub-sub-category!) and every page in this category to find URLs leading us directly to websites. Unfortunately, alexa doesn’t provide direct link to website anywhere on its page! No worries, we will use website titles and just add necessary ‘https://’ prefix after using a little bit of python magic and our very first ‘cleaning’ code.</p>
+
+<p><img src="/assets/post_img/inspection.png" alt="Inspection tool on alexa website" class="img-responsive" /></p>
+
+<p><em>Full code of this web crawler can be found here:</em> <githublink></githublink></p>
+
+<p><strong>Step-by-Step explanation:</strong></p>
+
+<p>Restrict LinkExtractor paths to only /ul element where website name (we will make it into url later) is found.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">rules</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Rule</span><span class="p">(</span><span class="n">LinkExtractor</span><span class="p">(</span><span class="n">restrict_xpaths</span><span class="o">=</span><span class="p">(</span><span class="s">'//div[@id="subcat_div"]//ul'</span><span class="p">),),</span>
+         <span class="n">callback</span><span class="o">=</span><span class="s">"parse"</span><span class="p">,</span>
+         <span class="n">follow</span><span class="o">=</span><span class="bp">True</span><span class="p">),)</span></code></pre></figure>
+
+<p>Iterate over each &lt;/a href/&gt; element containing internal link to more detailed statistics of given website. It’s also visible on screenshot from inspection tool. We need to grab all URLs like this, after this we pass it to content function.</p>
+
+<p>&lt;/a href/=”/web/20161118221952/http://www.alexa.com/siteinfo/yahoo.com”&gt;Yahoo.com&lt;/a&gt;</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'//div[@id="subcat_div"]//ul//a[contains(@href, "web")]//@href'</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></code></pre></figure>
+
+<p>We extract necessary items using Xpath. item[‘url’] is from where we will build actual URL (using title + ‘http:// prefix) to website after.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">AlexachiveItem</span><span class="p">()</span>
+    <span class="n">item</span><span class="p">[</span><span class="s">'category'</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'//span[@class="page-title-text"]//a//text()'</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'.//section[@class="td col-r"]//ul//li'</span><span class="p">):</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'.//a[contains(@href, "web")]//@href'</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'.//div[@class="description"]//text()'</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">item</span></code></pre></figure>
+
+<p>Now we have .csv file with URLs in following format:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="mi">20161118221952</span><span class="o">/</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">alexa</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">siteinfo</span><span class="o">/</span><span class="n">yahoo</span><span class="o">.</span><span class="n">com</span>
+<span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="mi">20161118221952</span><span class="o">/</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">alexa</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">siteinfo</span><span class="o">/</span><span class="n">google</span><span class="o">.</span><span class="n">com</span>
+<span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="mi">20161118221952</span><span class="o">/</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">alexa</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">siteinfo</span><span class="o">/</span><span class="n">twitter</span><span class="o">.</span><span class="n">com</span></code></pre></figure>
+
+<p>What we want to have is:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">yahoo</span><span class="o">.</span><span class="n">com</span>
+<span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">google</span><span class="o">.</span><span class="n">com</span>
+<span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">twitter</span><span class="o">.</span><span class="n">com</span></code></pre></figure>
+
+<p>Let’s start cleaning those strings from unnecessary characters. We want to save just last part of it.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'/home/user/Scrapy/AlexaPart2.csv'</span><span class="p">)</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">r'/web/\d+/http://www.alexa.com/siteinfo/'</span><span class="p">,</span><span class="s">' '</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">r'/\w+/\S.+|/~+.\w+/\S+'</span><span class="p">,</span> <span class="s">''</span><span class="p">)</span>
+<span class="n">http_series</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'http'</span><span class="p">)]</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'http'</span><span class="p">)]</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'http://'</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span><span class="s">''</span><span class="p">)</span>
+<span class="n">full_series</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">http_series</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df_more_description</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'More'</span><span class="p">)]</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'description'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">r',…,More,'</span><span class="p">,</span> <span class="s">' '</span><span class="p">)</span>
+<span class="n">full_series</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">full_series</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">full_series</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'/home/user/Scrapy/AlexaPart2_processed.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></code></pre></figure>
+
+<p><strong>Step-by-step explanation:</strong></p>
+
+<ol>
+  <li>Read .csv file with data.</li>
+  <li>Select all rows which do not have empty description</li>
+  <li>Replace string /web/20161118221952/http://www.alexa.com/siteinfo/ using regex with nothing</li>
+  <li>Replace any edge-cases with nothing (ie. subdomains)</li>
+  <li>Save websites containing ‘http’ to separate variable (some of titles do contain it!)</li>
+  <li>Drop duplicate entries</li>
+  <li>Select urls not containing ‘http’.</li>
+  <li>Add ‘http’ to those.</li>
+  <li>Remove unnecessary spaces</li>
+  <li>Merge urls with added ‘http’ prefix with ones which already had one.</li>
+  <li>Remove unnecessary strings from description item.</li>
+  <li>Drop empty and duplicated rows and save to .csv (we save without index because we need to use those URLS for further scraping! Scrapy will not read those with numeric index at the begining)</li>
+</ol>
+
+<p>Ready, now <strong>we have 50.000 URLS to scrape privacy policies from!</strong></p>
+
+<h2 id="web-scraping-full-html-pages-based-on-condition">Web scraping full html pages based on condition.</h2>
+
+<p>We have a list of 50.000 urls in format of http://example.com. We need to find link to privacy policies in each of those websites.</p>
+
+<p>A lot of websites follow a pattern of having url in form of :</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privacy</span><span class="o">-</span><span class="n">policy</span>
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privacy</span></code></pre></figure>
+
+<p>But very often there are unforeseeable complications, for example:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">legal</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">privacy</span><span class="o">-</span><span class="n">policy</span> <span class="err">–</span> <span class="n">When</span> <span class="n">URL</span> <span class="ow">is</span> <span class="n">hidden</span> <span class="n">within</span> <span class="n">additional</span> <span class="n">directory</span><span class="o">.</span>
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privacy</span><span class="o">-</span><span class="n">policy</span> <span class="err">–</span> <span class="n">When</span> <span class="n">it</span> <span class="n">redirects</span> <span class="n">to</span> <span class="n">geolocated</span> <span class="n">services</span><span class="o">.</span>
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privacy</span>  <span class="o">-</span> <span class="n">Has</span> <span class="n">separate</span> <span class="n">subdomain</span> <span class="k">for</span> <span class="n">legal</span> <span class="n">documents</span><span class="o">.</span></code></pre></figure>
+
+<p>It was also often a case that policy is split into many separate documents, each detailing data usage for specific context.</p>
+
+<p>Our main interest right now is privacy policy &amp; terms of service documents, however, we will also store urls to other kinds of documents which do not (most likley) fit that pattern (for example, cookies related documents). It’s always a good practice to save potentially important information, even if we cannot use it at current moment, especially when it doesn’t cost us anything in terms of additional code or time of execution.</p>
+
+<h2 id="extracting-privacy-policy-text-from-50000-urls">Extracting privacy policy text from 50.000 urls.</h2>
+
+<p><em>Full code of this web crawler can be found here:</em> <githublink></githublink></p>
+
+<p>Let’s work logic of this web crawler step-by-step:</p>
+
+<p>Restrict following links to avoid deep crawl through the whole web page. We want just one page. Looping over so many internal urls in search of privacy policy is pointless. If you will manually visit few of links you notice that privacy policies are almost always at front page.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">rules</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Rule</span><span class="p">(</span>
+        <span class="n">LinkExtractor</span><span class="p">(),</span>
+        <span class="n">callback</span><span class="o">=</span><span class="s">'parse'</span><span class="p">,</span> <span class="n">follow</span><span class="o">=</span><span class="bp">False</span><span class="p">),)</span></code></pre></figure>
+
+<p>Read urls from start_urls (this is where we load .csv file with 50k links to crawl). Yield request to each url specifying another function as callback (parse).</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">start_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_urls</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s">'download_timeout'</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">errback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">errback_f</span><span class="p">)</span></code></pre></figure>
+
+<p>This function handles all of our web crawling. First, it looks for string ‘privacy’ within each response.url (full code looks also for ‘terms’). Looking in response.body is another, viable option, but we save some time by checking just url. Else condition is to catch all of the exceptions from this and store it in separate item, this entries will be reprocessed later together with whatever errback_f function catches. Most important part of parse function is xpath which extracts raw text of documents from html source code with as little unnecessary information as possible. This deserves additional explanation in point below.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s">'privacy'</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">GetpolicyItem</span><span class="p">()</span>
+        <span class="n">raw_policy</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+            <span class="s">"//*[contains(text(), 'Policy') or contains(text(), 'Privacy')]"</span>
+            <span class="s">"/following-sibling::*[not(self::script)][not(self::meta)][not(self::link)]//text()"</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+        <span class="n">catch_regex</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r'/\w+/\S.+|/~+.\w+/\S+'</span><span class="p">,</span> <span class="s">''</span><span class="p">,</span> <span class="n">catch_regex</span><span class="p">)</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'domain'</span><span class="p">]</span> <span class="o">=</span> <span class="n">domain</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_policy</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">GetpolicyItem</span><span class="p">()</span>
+    <span class="n">item</span><span class="p">[</span><span class="s">'rest_url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span>
+    <span class="n">catch_regex</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r'/\w+/\S.+|/~+.\w+/\S+'</span><span class="p">,</span> <span class="s">''</span><span class="p">,</span> <span class="n">catch_regex</span><span class="p">)</span>
+    <span class="n">item</span><span class="p">[</span><span class="s">'domain'</span><span class="p">]</span> <span class="o">=</span> <span class="n">domain</span>
+    <span class="k">yield</span> <span class="n">item</span></code></pre></figure>
+
+<p>It is problematic to process text from html while leaving unnecessary characters/syntax out. We can use Beautiful Soup parser (we actually do use it later), but a lot of websites behave in unexpected manner and parser still includes script or meta tags. I opted for trying to limit what exactly do I want to ‘catch’ by conditions within my xpath. After visiting http://example.com/privacy-policy xpath will look for any text containing ‘Policy’ or ‘Privacy’. This will happen in first come, first served basis, exactly what I want as almost all of policies state this particular string at the beginning of the document, usually somewhere between <title> or &lt;h1&gt; tag. After that it will catch all of the text below this condition, excluding <script>, <meta /> and <link /> tags. About 60% of our documents are ‘NLP ready’ being caught by this xpath, remaining 40% need further processing.</script></title></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">raw_policy</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span>
+    <span class="s">"//*[contains(text(), 'Policy') or contains(text(), 'Privacy')]"</span>
+    <span class="s">"/following-sibling::*[not(self::script)][not(self::meta)][not(self::link)]//text()"</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></code></pre></figure>
+
+<p>Errback_f handles all of our timeouts and another set of urls for further processing.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">errback_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">failure</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">failure</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="nb">TimeoutError</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">failure</span><span class="o">.</span><span class="n">request</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">GetpolicyItem</span><span class="p">()</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">'fail'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'FAIL'</span>
+        <span class="k">yield</span> <span class="n">item</span></code></pre></figure>
+
+<p>We could chain this two crawlers into one (crawling links from alexa and navigating to privacy policy), without a need to read and parse urls from .csv file and separate execution. It didn’t happen because figuring out best way to catch a lot of documents from a lot of different websites it’s hard to debug and optimize! Running such crawler takes time, running it on chunks of data will not work too well because those chunks do not paint a full picture, NaNs are of least concern here, but ‘garbage text’ is a big problem– this ‘garbage’ is unique so it’s hard to catch, problems pile up very fast and because this is ‘long’ data we end up with very big database full of, most probably, garbage. I’ve choose to work in steps, ‘have a peak inside’, evaluate given approach, implement adjustments and execute only then. This involved a lot of back-and-forward with code and at least few compromises. Sometimes it’s just easier to move ‘outliers’ for later processing than try to catch all of data at one pass.</p>
+
+<h2 id="storing-scrapy-items-in-postgresql">Storing scrapy items in PostgreSQL</h2>
+
+<p>Another crucial decision was how to store scraped documents. For purely quantitative data, usually the best choice is .csv file, here I opted for storing data in postgres, another interesting choice would be ElasticSearch allowing to search by text, but for now let’s focus on how to connect scrapy with postgres.</p>
+
+<p>Begin by installing postgres and creating database. To create database you need to specify it’s name, user, password, table name and grant necessary privileges. All of those steps are required to pipeline scrapy items into postgres, without it connection will fail. We create it by issuing following commands in psql shell (postgres interactive shell):</p>
+
+<p><strong>Connect to shell (as postgres user):</strong></p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span></code></pre></figure>
+
+<p><strong>Create database:</strong></p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">create</span> <span class="k">database</span> <span class="n">gp_db</span><span class="p">;</span>
+<span class="k">create</span> <span class="k">user</span> <span class="n">gp_user</span> <span class="k">with</span> <span class="n">password</span> <span class="s1">'testpass1'</span><span class="p">;</span>
+<span class="k">grant</span> <span class="k">all</span> <span class="k">privileges</span> <span class="k">on</span> <span class="k">database</span> <span class="n">privacy_process</span> <span class="k">to</span> <span class="n">gp_user</span><span class="p">;</span></code></pre></figure>
+
+<p><strong>Now, connect to your database shell:</strong></p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="o">/</span><span class="k">c</span> <span class="n">gp_db</span><span class="p">;</span></code></pre></figure>
+
+<p><strong>Create table:</strong></p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="o">/</span><span class="k">c</span> <span class="n">crawl</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">policy</span> <span class="p">(</span>
+  <span class="n">id</span> <span class="nb">SERIAL</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+  <span class="n">url</span> <span class="nb">TEXT</span><span class="p">,</span>
+  <span class="n">fail</span> <span class="nb">TEXT</span><span class="p">,</span>
+  <span class="n">title</span> <span class="nb">TEXT</span><span class="p">,</span>
+  <span class="nb">text</span> <span class="nb">TEXT</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>We specify every type as TEXT without limits because it is impossible to judge how long each document will be. Remember to end all of your commands with semicolon, otherwise postgres command will not execute. Scrapy requires password for user account, otherwise it will refuse to connect.  If you run into problems with privileges you can add them manually, by issuing following commands:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">DATABASE</span> <span class="n">gp_db</span> <span class="k">TO</span> <span class="n">gp_user</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">TABLE</span> <span class="n">policy</span> <span class="k">TO</span> <span class="n">gp_user</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">ALL</span> <span class="n">TABLES</span> <span class="k">IN</span> <span class="k">SCHEMA</span> <span class="k">public</span> <span class="k">TO</span> <span class="n">gp_user</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">ALL</span> <span class="n">SEQUENCES</span> <span class="k">IN</span> <span class="k">SCHEMA</span> <span class="k">public</span> <span class="k">TO</span> <span class="n">gp_user</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">ALL</span> <span class="n">FUNCTIONS</span> <span class="k">IN</span> <span class="k">SCHEMA</span> <span class="k">public</span> <span class="k">TO</span> <span class="n">gp_user</span><span class="p">;</span></code></pre></figure>
+
+<p><strong>Scrapy item pipeline to postgres</strong></p>
+
+<p>There are multiple ways to connect scrapy with postgres. Here we will use sqlalchemy, I opted for sqlalchemy mostly because it’s easiest and error reporting is on high level (contrary to setting up pipeline only with psycog which throws pretty enigmatic error messages even for most obvious things).</p>
+
+<p><strong>Adjust your settings.py file inside of spider directory</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">DATABASE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'drivername'</span><span class="p">:</span><span class="s">'postgres'</span><span class="p">,</span>
+    <span class="s">'host'</span><span class="p">:</span><span class="s">'localhost'</span><span class="p">,</span>
+    <span class="s">'port'</span><span class="p">:</span><span class="s">'5432'</span><span class="p">,</span>
+    <span class="s">'username'</span><span class="p">:</span><span class="s">'gp_user'</span><span class="p">,</span>
+    <span class="s">'password'</span><span class="p">:</span><span class="s">'test1'</span><span class="p">,</span>
+    <span class="s">'database'</span><span class="p">:</span><span class="s">'gp_db'</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><strong>Create models.py file inside of spider directory (same place where settings.py resides)</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">sqlalchemy.engine.url</span> <span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">DateTime</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Integer</span><span class="p">,</span> <span class="n">SmallInteger</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">LargeBinary</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">getpolicy</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="n">DeclarativeBase</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">db_connect</span><span class="p">():</span>
+    <span class="s">"""
+    Performs database connection using database settings from settings.py.
+    Returns sqlalchemy engine instance
+    """</span>
+    <span class="k">return</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">DATABASE</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+
+    <span class="n">DeclarativeBase</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Deals</span><span class="p">(</span><span class="n">DeclarativeBase</span><span class="p">):</span>
+    <span class="s">"""Sqlalchemy deals model"""</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s">"scraped"</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">privacy</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'privacy'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
+    <span class="n">terms</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'terms'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
+    <span class="n">rest_url</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'rest_url'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'url'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
+    <span class="n">fail</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'fail'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s">'domain'</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span></code></pre></figure>
+
+<p>It’s a nice snippet take from: <a href="https://newcoder.io/scrape/part-3/">https://newcoder.io/scrape/part-3/</a> I recommend whole tutorial if you are new to scrapy, it’s a well written guide. I will skip explaining what each function does (you can read it on newcoder.io), the only important part for our project is mapping of columns in class Deals. Those variables need to correspond to the ones you created earlier while setting up database and table, names are case sensitive and types need to be the same.</p>
+
+<p><strong>Change pipelines.py</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span>
+<span class="kn">from</span> <span class="nn">getpolicy.models</span> <span class="kn">import</span> <span class="n">Deals</span><span class="p">,</span> <span class="n">db_connect</span><span class="p">,</span> <span class="n">create_table</span>
+<span class="k">class</span> <span class="nc">GetpolicyPipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">process_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">spider</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">db_connect</span><span class="p">()</span>
+        <span class="n">create_table</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">process_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">spider</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="n">deal</span> <span class="o">=</span> <span class="n">Deals</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">deal</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">raise</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">item</span></code></pre></figure>
+
+<p>Now we can run our spider, it should save items to postgres. We check it by login into psql shell and to our database (/c gp_db) to issue following command:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="k">table</span> <span class="k">limit</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="n">It</span> <span class="n">will</span> <span class="k">select</span> <span class="k">all</span> <span class="n">columns</span> <span class="k">for</span> <span class="k">first</span> <span class="mi">5</span> <span class="k">rows</span><span class="p">.</span></code></pre></figure>
+
+<p>Remember that running scrapy multiple times will append items to database. If you want to start with clean database for each run of spider you need to issue following command in psql shell:</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">TRUNCATE</span> <span class="k">table_name</span><span class="p">;</span>
+<span class="k">DELETE</span> <span class="k">FROM</span> <span class="k">table_name</span><span class="p">;</span></code></pre></figure>
+
+<h2 id="how-to-clean-textual-data-using-python">How to clean textual data using python?</h2>
+
+<p><em>Full code here:</em> <link to="" github="" /></p>
+
+<p>We have our database ready, spider gathered a lot of data and stored it in sql database. Now it’s time to process this data. <strong>We need to delete unwanted characters from scraped html pages.</strong> However, after quick glance at data we notice that a lot of documents are polluted with many different cases without any obvious pattern. First we need to understand structure of our out-of-order data to know what exactly do we want to remove.</p>
+
+<p><strong>Average length of privacy policy is 6-8 thousand characters</strong>. We cannot look at this data comfortably using pandas head() function. We store close to 50 thousand of separate documents, each one of them contain a lot of noise. We need to setup some framework for grading those documents:</p>
+
+<ol>
+  <li>Check length of each document. Remove any document with length shorter than 1500 characters</li>
+  <li>Check if specific string exists in document.</li>
+</ol>
+
+<p>Checking for length guarantees that we deal with properly downloaded html page, there are a lot of cases when we downloaded just part of document (ie. javascript heavy websites) or document without policy text at all! Second condition checks for existence of specific css syntax. It seems that parsers very often catch css as part of text, no matter what we do – we will want to get rid of it without deleting actual text.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">privacy_css</span> <span class="o">=</span> <span class="n">privacy_only</span><span class="p">[</span><span class="n">privacy_only</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'inline|font|img|margin|px|padding|menu'</span><span class="p">)]</span>
+<span class="n">privacy_only</span> <span class="o">=</span> <span class="n">privacy_only</span><span class="p">[</span><span class="o">~</span><span class="n">privacy_only</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'inline|font|img|margin|px|padding|menu'</span><span class="p">)]</span>
+<span class="n">privacy_only</span> <span class="o">=</span> <span class="n">privacy_only</span><span class="p">[</span><span class="n">privacy_only</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="nb">len</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">]</span>
+<span class="n">privacy_css</span> <span class="o">=</span> <span class="n">privacy_css</span><span class="p">[</span><span class="n">privacy_css</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="nb">len</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">]</span></code></pre></figure>
+
+<p>We divide our dataset in two dataframes, one with documents heavy on css syntax inside and second one free of those. We will use a slightly different functions to clean them so we need to have them available separately. This is because  regex substitution can have different effects depending on order of execution.</p>
+
+<p>How did we decide on which tags to look for? We created word frequency count for unprocessed documents checking first 100 characters only (assumption is that css is always in beginning of the document). We could add more of those tags but this is enough to deal with most of cases we are interested in.</p>
+
+<p><img src="/assets/post_img/Figure_2_wordfreq_first100.png" alt="Word frequency in unprocessed documents" class="img-responsive" /></p>
+
+<p>Above plot shows word count for unprocessed documents, later we will recreate it for processed documents to show difference. In top 50 words we can see a lot of non-alphanumeric characters and a lot of css syntax. Using word frequency is a good way to get a ‘skim’ at data we are working with. Remember to remove stopwords and flatten your word list! ‘Flattening’ refers to concating all of strings from all documents into one list, without it we cannot use Counter function. Here’s code:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">first_100</span> <span class="o">=</span> <span class="n">privacy_css</span><span class="o">.</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">.</span><span class="nb">str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">])</span>
+<span class="n">first_100</span> <span class="o">=</span> <span class="n">first_100</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span>
+<span class="n">css_flat</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">first_100</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="n">css_flat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="n">count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">css_flat</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">plot_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'words'</span><span class="p">,</span> <span class="s">'freq'</span><span class="p">])</span>
+<span class="n">plot_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s">'barh'</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s">'words'</span><span class="p">)</span></code></pre></figure>
+
+<p>Let’s move to actual cleaning of documents. We already store them in separate variables. The biggest challenge is properly cleaning css tags without removing text. Stopwords and non-alphanumeric signs (excluding punctuation for now!) are secondary task. While working with re library it is however important to notice that execution of one substitution can change, or even make impossible, another one, some regex depends on existence of specific characters, for example – dots. We need to think what to remove first not to end up in a loop without option to ‘hook’ our regex to anything useful. We apply function to all of our pandas column in following way:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">privacy_css</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span> <span class="o">=</span> <span class="n">privacy_css</span><span class="p">[</span><span class="s">'privacy'</span><span class="p">]</span><span class="o">.</span><span class="nb">apply</span><span class="p">(</span><span class="n">clean_css</span><span class="p">)</span></code></pre></figure>
+
+<p>We define clean_css function and compile necessary regex before:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">BAD_1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'[^0-9A-Za-z #+_,.]'</span><span class="p">)</span> <span class="c1"># Remove everything which is NOT [] - add ., if You want to keep punctuation
+</span><span class="n">HASH_REMOVE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'#</span><span class="err">\</span><span class="s">S+'</span><span class="p">)</span> <span class="c1"># Remove any word with hash in front
+</span><span class="n">DIGIT_REMOVE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'</span><span class="err">\</span><span class="s">d</span><span class="err">\</span><span class="s">w*'</span><span class="p">)</span> <span class="c1"># Remove any word with digit
+</span><span class="n">FIRST_CSS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'[</span><span class="err">\</span><span class="s">#</span><span class="err">\</span><span class="s">.</span><span class="err">\</span><span class="s">w</span><span class="err">\</span><span class="s">-</span><span class="err">\</span><span class="s">,</span><span class="err">\</span><span class="s">s</span><span class="se">\n\r\t</span><span class="s">:]+(?=</span><span class="err">\</span><span class="s">s*</span><span class="err">\</span><span class="s">{)'</span><span class="p">)</span> <span class="c1">#Remove css tags
+</span><span class="n">CSS_TAG2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'.*;'</span><span class="p">)</span> <span class="c1">#Remove remaining css tags
+</span><span class="n">JS_RM</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'/</span><span class="err">\</span><span class="s">**.*</span><span class="err">\</span><span class="s">/'</span><span class="p">)</span> <span class="c1">#Remove css tags between slashes
+</span><span class="n">SPACES</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="nb">compile</span><span class="p">(</span><span class="s">'</span><span class="err">\</span><span class="s">s</span><span class="err">\</span><span class="s">s+'</span><span class="p">)</span> <span class="c1">#Remove double spaces
+</span><span class="n">STOPWORDS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s">'english'</span><span class="p">))</span> <span class="c1"># Remove stopwords</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">clean_css</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s">"lxml"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">CSS_TAG2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">FIRST_CSS</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">JS_RM</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">HASH_REMOVE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">DIGIT_REMOVE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">BAD_1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">SPACES</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">STOPWORDS</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span></code></pre></figure>
+
+<p>Function for cleaning documents without css tags is slightly different. Remember, order matters!</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">clean_noncss</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s">"lxml"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">CSS_TAG2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">FIRST_CSS</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">BAD_1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">SPACES</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">' '</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="c1">#text = ' '.join(word for word in text.split() if word not in STOPWORDS)
+</span>    <span class="k">return</span> <span class="n">text</span></code></pre></figure>
+
+<p>We concat both dataframes (css-heavy and non-css heavy) back into one dataframe. Let’s check how word frequency for first 100 strings looks now.</p>
+
+<p><img src="/assets/post_img/Figure_3_wordfreq_first100_processed.png" alt="Word frequency in unprocessed documents" class="img-responsive" /></p>
+
+<p>We still have some leftover tags, but it’s far better, we can see that word distribution is more natural. This should not influence further exploration of this dataset and should allow for building some good models.</p>
+
+<p>To actually compare how well of a job we did with cleaning css syntax let’s create stacked bar chart comparing non-css and css documents. They should have very similar word distribution.</p>
+
+<p><strong>Unprocessed documents plot followed very specific distribution:</strong></p>
+
+<p><img src="/assets/post_img/Figure_5_wordfreq_notprocesssed_all.png" alt="Word frequency in unprocessed documents" class="img-responsive" /></p>
+
+<p><strong>While processed documents plot is much different:</strong></p>
+
+<p><img src="/assets/post_img/Figure_4_wordfreq_processed_all.png" alt="Word frequency in unprocessed documents" class="img-responsive" /></p>
+
+<p>As we can see, non-alphanumeric characters and css syntax is no longer prevailing theme. Because CSS heavy documents were a smaller dataset they are lower in overall count, but beyond that we can see that distributions are very similar. We can conclude that text cleaning was successful.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>After finishing all of the above steps we have a corpus of 50 thousand documents stored in postgres database. All of those are cleaned from unwanted characters and badly formated text. We used pretty simple techniques for this but, nevertheless, very effective.</p>
+
+<p>In process of searching for possible solutions we encountered few others very good propositions of exploring such big body of documents and cleaning them effectively. For my purposes, regex was sufficient. However, this is not production ready dataset, it could still be processed more, for example:</p>
+
+<ol>
+  <li>Creating a full dictionary of characters to remove, tokenizing it and running compare with documents we have – sort of a ‘brute force’ solution.</li>
+  <li>Building TD-IDF index of all documents and using is as a statistical guide for removal of unwanted characters.</li>
+  <li>Using ML solutions, assuming similarity of documents.</li>
+</ol>
+
+<p>Regex was a method of choice because of it’s simplicity and amount of time needed to make it work.</p>
+
+<p>Web scraping from Alexa was personal choice. As mentioned, we could easily do with just manually adding different data sources to achieve same effect. Alexa provided us with a short cut and also shown alternative way to scrape websites. Please, set your crawler settings for appropriate timeouts using web.archive.org for crawling, all of requests will pass through their servers!</p>
+
+<p>In Part II we will use NLP to understand all of our documents better.</p>
+
+  </div><a class="u-url" href="/2019/09/10/Web-scraping-50-thousand-documents-for-NLP.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+	<h2 class="footer-heading" style="text-align:center; font-size:14px;">
+		<a href="https://twitter.com/neotokio_3">Tweet Me!</a>
+		<a href="https://github.com/neotokio">Github Me!</a>
+		</h2>
+	    <h2 class="footer-heading" style="text-align:center; font-size:11px;">
+		I solemnly swear that I am up to fill it someday</h2>
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">
+            </li>
+            <li><a class="u-email" href="mailto:"></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
