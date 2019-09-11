@@ -76,7 +76,7 @@ We need to crawl every category (and sub-category or even sub-sub-category!) and
 ![Inspection tool on alexa website](/assets/post_img/inspection.png){:class="img-responsive"}
 
 
-*Full code of this web crawler can be found here:* <githublink>
+*Full code of this web crawler can be found here:* <https://github.com/neotokio/scrapy_spiders/tree/master/get_policies/alexachive>
 
 **Step-by-Step explanation:**
 
@@ -186,7 +186,7 @@ Our main interest right now is privacy policy & terms of service documents, howe
 Extracting privacy policy text from 50.000 urls.
 ---------------------
 
-*Full code of this web crawler can be found here:* <githublink>
+*Full code of this web crawler can be found here:* <https://github.com/neotokio/scrapy_spiders/tree/master/get_policies/getpolicy>
 
 Let’s work logic of this web crawler step-by-step:
 
@@ -384,7 +384,7 @@ DELETE FROM table_name;
 How to clean textual data using python?
 ---------------------
 
-*Full code here:* <link to github>
+*Full code here:* <https://github.com/neotokio/scrapy_spiders/blob/master/get_policies/getpolicy/getpolicy/spiders/svd_processing.py>
 
 We have our database ready, spider gathered a lot of data and stored it in sql database. Now it’s time to process this data. **We need to delete unwanted characters from scraped html pages.** However, after quick glance at data we notice that a lot of documents are polluted with many different cases without any obvious pattern. First we need to understand structure of our out-of-order data to know what exactly do we want to remove.
 
