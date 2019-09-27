@@ -22,14 +22,14 @@ Introduction: What topic to choose for data science project?
 
 As mentioned, we will not work with any public API, nor we will work with something which was already described numerous times – I am looking at you, real estate data. It’s not that this is not interesting, you can find a lot of fresh case studies build around popular topics like housing markets or macroeconomic indicators. But here, let’s use something else.
 
-We will build a large corpus of legal documents which are available on almost every website. Namely, privacy policies & terms of service. If you are interested in how to gather large amount of specific data from many different websites by web scraping – this is exactly what we will do. To accomplish this, I needed to hack around with few methods as you cannot crawl Google.com effectively without either large resources. You also want to avoid falling into grey area of web scraping or waisting a lot of time for manual discovery of data sources. We want to save time, build original dataset, clean it and learn something new. Let’s start.
+We will build a large corpus of legal documents which are available on almost every website. Namely, privacy policies & terms of service. If you are interested in how to gather large amount of specific data from many different websites by web scraping – this is exactly what we will do. To accomplish this, I needed to hack around with few methods as you cannot crawl Google.com effectively without large resources. You also want to avoid falling into grey area of web scraping or wasting a lot of time for manual discovery of data sources. We want to save time, build original dataset, clean it and learn something new. Let’s start.
 
 Finding source of data (for free).
 ---------------------
 
 One rule will guide us through process of finding our source – **Whatever was posted on a web, stays on a web.**
 
-There are two services which are actually dealing privacy policies and their further analysis. I recommend checking out both, a lot of work went into those projects and they deserve community appriciation.
+There are two services which are actually dealing with privacy policies and their analysis. I recommend checking out both, a lot of work went into those projects and they deserve community appriciation.
 
 <https://pribot.org/polisis> – **Summarization of privacy polices using ML.**
 
