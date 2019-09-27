@@ -53,7 +53,7 @@ We can grade those ideas by time/effort/resources ratio needed to make them work
 
 There is also additional constrain, we want to have policies from websites that ‘matter’. So anything which stores user information, has considerable volume of traffic, provides some sort of a service to Internet buyers or has high position in rankings. That way we can be sure that contents of policies do matter for large amount of users. Also, we will focus on English-only websites.
 
-Alexa was providing “top websites globally” service for free few years back, but not anymore. It’s a shame because their list allowed for searching by country or categories, exactly what we needed.. I am not interested in specific websites statistics, I am only interested in URL to website however Alexa pushes me to pay for the whole service. What can be done about it?
+Alexa was providing “top websites globally” service for free few years back, but not anymore. It’s a shame because their list allowed for searching by country or categories, exactly what we needed. I am not interested in specific websites statistics, I am only interested in URL to website, however Alexa pushes me to pay for the whole service. What can be done about it?
 
 Well, we can check previous, free, version of Alexa using <https://web.archive.org/>.
 
@@ -226,7 +226,7 @@ def parse(self, response):
 {% endhighlight %}
 
 
-It is problematic to process text from html while leaving unnecessary characters/syntax out. We can use Beautiful Soup parser (we actually do use it later), but a lot of websites behave in unexpected manner and parser still includes script or meta tags. I opted for trying to limit what exactly do I want to ‘catch’ by conditions within my xpath. After visiting http://example.com/privacy-policy xpath will look for any text containing ‘Policy’ or ‘Privacy’. This will happen in first come, first served basis, exactly what I want as almost all of policies state this particular string at the beginning of the document, usually somewhere between <title> or <h1> tag. After that it will catch all of the text below this condition, excluding <script>, <meta> and <link> tags. About 60% of our documents are ‘NLP ready’ being caught by this xpath, remaining 40% need further processing.
+It is problematic to process text from html while leaving unnecessary characters/syntax out. We can use Beautiful Soup parser (we actually do use it later), but a lot of websites behave in unexpected manner and parser still includes script or meta tags. I opted for trying to limit what exactly do I want to ‘catch’ by conditions within my xpath. After visiting http://example.com/privacy-policy xpath will look for any text containing ‘Policy’ or ‘Privacy’. This will happen in first come, first served basis, exactly what I want as almost all of policies state this particular string at the beginning of the document, usually somewhere between title or h1 tag. After that it will catch all of the text below this condition, excluding <script>, <meta> and <link> tags. About 60% of our documents are ‘NLP ready’ being caught by this xpath, remaining 40% need further processing.
 {% highlight python %}
 raw_policy = response.xpath(
     "//*[contains(text(), 'Policy') or contains(text(), 'Privacy')]"
