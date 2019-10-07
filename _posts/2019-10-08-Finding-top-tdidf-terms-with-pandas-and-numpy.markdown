@@ -36,20 +36,20 @@ Pandas and numpy serve as a backbone for whole script. Itertools was imported to
 
 This is actually very popular piece of code. I found it many times while googling around. But let's start from the beginning.
 
-    1.We load csv and do some lightweight processing, changing strings to 'lower' and removing stopwords. Next we call TfidVectorizer to perform 2.vectorization using parameters max/min for returned terms.
-    3.We start iterating through dataframe using for loop. We return term matrix for each row.
-    4. Single_tdidf is a variable from which we call our function to process TD-IDF matrix to more compact form.
+1. We load csv and do some lightweight processing, changing strings to 'lower' and removing stopwords. Next we call TfidVectorizer to perform vectorization using parameters max/min for returned terms.
+2. We start iterating through dataframe using for loop. We return term matrix for each row.
+3. Single_tdidf is a variable from which we call our function to process TD-IDF matrix to more compact form.
 
 Above three steps will be repeated for each script.
 
 In case of **SCRIPT I**, we perform following operations in tdidf_top function:
 
-    1.Function tdidf_top takes two arguments from our loop.
-    2.Get terms (strings) from vectorized array.
-    3.Get indicies from array and sort them from descending.
-    4.Define variable with amount of top terms you want returned.
-    5.Store X top terms in variable.
-    6.Append terms to list.
+1. Function tdidf_top takes two arguments from our loop.
+2. Get terms (strings) from vectorized array.
+3. Get indicies from array and sort them from descending.
+4. Define variable with amount of top terms you want returned.
+5. Store X top terms in variable.
+6. Append terms to list.
 
 At the end we transform them to DF column. Column will store list of X top terms from TD-IDF, without their frequency score.
 
@@ -179,7 +179,7 @@ This prints:
 2  Apollo’s Josh Harris Talks Private Markets at ...     markets  0.20851
 {% endhighlight %}
 
-Steps:
+**Steps:**
 
 1. Adjust for loop. Create two lists.
 2. Tdidf call stays exactly the same, but we need to return terms and array with frequency values and store it inside of a list. With this done, we can proceed to 3rd possibility of extracting top tdidf terms.
