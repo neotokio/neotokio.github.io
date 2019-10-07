@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Web scraping 50 thousand documents from different sources for NLP"
+title:  "Finding top TDIDF terms with pandas and numpy"
 date:   2019-10-08 00:51:12 +0200
 ---
 This text is sort of offshoot from actual project I am currently working on. Recently I took upon myself exploring NLP landscape, in this case topic modelling using TD-IDF algorithm. Before tweaking further my terms extraction I wanted to be really sure that I am storing my data in most accessible way. So I started to play around. This lead me to few simple solutions, each one of them returns TD-IDF matrix in slightly different form, depending on how do I want to query our dataset later. Text will be divided by each script and short discussion.
