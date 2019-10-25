@@ -13,6 +13,8 @@ This is my first ever kaggle notebook! Enjoy, kind stranger.
 
 I will use sample of 300 articles downloaded using newspaper3k. These are financial articles. I also kept false positives which returned nothing (ie. newsletter signup page) to serve as sort of 'reference point'. All of the code handles up to 1000 documents easily.
 
+**Table of Contents.**
+
 * TOC
 {:toc}
 
@@ -197,9 +199,8 @@ This prints:
 7. Explode numpy array to separate values. This is a convenient way of fitting dataframe row-by-row with terms. That way we avoid length mismatch between terms/frequency list.
 8. Assign frequency values to new column
 
-**
+This solution gives us comfortable way to select rows using pandas conditions.
 
-This solution gives us comfortable way to select rows using pandas conditions.**
 {% highlight python %}
 s1 = df_words[(df_words.score > 0.15) & (df_words.score < 0.3)] # Select all rows with TD-IDF frequency higher than 0.15 and lower than 0.30
 s2 = df_words[df_words.word.duplicated(keep=False)] #Show high in frequency words which are reappearing across all documents
