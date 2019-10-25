@@ -9,9 +9,12 @@ You can find this project as jupyter notebook on kaggle: <https://www.kaggle.com
 
 This is my first ever kaggle notebook! Enjoy, kind stranger.
 
-**Things we will tackle:**
+**What we will do here:**
 
 I will use sample of 300 articles downloaded using newspaper3k. These are financial articles. I also kept false positives which returned nothing (ie. newsletter signup page) to serve as sort of 'reference point'. All of the code handles up to 1000 documents easily.
+
+* TOC
+{:toc}
 
 Let's start by importing neccessary libraries.
 
@@ -27,6 +30,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 Pandas and numpy serve as a backbone for the whole script. Itertools was imported to run few tests with flattening numpy arrays. Stopwords are stopwords, obviously. TfidfVectorizer is our main culprit.
 
 **SCRIPT I**
+---------------------
 
 *Return top X terms, without their score for given document. Store them in a list.*
 
@@ -85,6 +89,7 @@ This prints:
 {% endhighlight %}
 
 **SCRIPT II**
+---------------------
 
 *Adding frequency value and storing array as dictionary*
 
@@ -125,6 +130,7 @@ This prints:
 {% endhighlight %}
 
 **SCRIPT III**
+---------------------
 
 Most complex but very easy to query later. Here, I will also store TD-IDF matrix in dataframe, but now I will explode our list, storing each word with corresponding frequency in adjacent row. This allows to utilize all of pandas selection tools without writing additional code to access interesting values.
 
@@ -183,7 +189,7 @@ This prints:
 2. Tdidf call stays exactly the same, but we need to return terms and array with frequency values and store it inside of a list. With this done, we can proceed to 3rd possibility of extracting top tdidf terms.
 3. In place of appending to dictionary (SCRIPT II) we just return array of frequencies as a list and list of terms. Now we can build dataframe, where each row is one word with corresponding frequency. Remember that products od tdidf_top function are now stored in two list - w and v.
 
-**Next*
+**Next**
 
 4. Store terms and frequency in two separate columns of dataframe. Right now each columns contains a list of 5 top tdidf terms with their frequency.
 5. Set title of dataframe to 'title', this will make dataframe easier to operate later on without a need to store whole text of a document. Remember that dataframes can be easily merged ‘as needed’.
